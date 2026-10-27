@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 6 - Reloj en movimiento</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-color: #241536;
+            font-family: Helvetica, Arial, sans-serif;
+            color: #fff0d5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contenedor {
+            text-align: center;
+            padding: 25px;
+        }
+
+        h1 {
+            font-family: Georgia, serif;
+            font-size: 42px;
+            font-weight: normal;
+            color: #ff9b42;
+            margin-bottom: 8px;
+        }
+
+        .subtitulo {
+            color: #d5c5e8;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        canvas {
+            display: block;
+            width: 340px;
+            height: 340px;
+            max-width: 85vw;
+            margin: auto;
+        }
+
+        .nota {
+            margin-top: 22px;
+            color: #d5c5e8;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .punto {
+            color: #ff9b42;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1>Reloj haloweenesco</h1>
+        <p class="subtitulo">spooky scary skeleton</p>
+
+        <canvas id="reloj" width="400" height="400"></canvas>
+
+        <p class="nota">
+            <span class="punto">●</span>
+            HORA &nbsp; MINUTOS &nbsp; SEGUNDOS
+        </p>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById("reloj");
+        const ctx = canvas.getContext("2d");
+
+        const centroX = 200;
+        const centroY = 200;
+        const radio = 165;
+
+        function dibujarManecilla(angulo, largo, grosor, color) {
+            ctx.save();
+
+            ctx.translate(centroX, centroY);
+            ctx.rotate(angulo);
+
+            ctx.beginPath();
+            ctx.moveTo(0, 12);
+            ctx.lineTo(0, -largo);
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = grosor;
+            ctx.lineCap = "round";
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function dibujarReloj() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Carátula
+            ctx.beginPath();
+            ctx.arc(centroX, centroY, radio, 0, Math.PI * 2);
+            ctx.fillStyle = "#fff0d5";
+            ctx.fill();
+
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = "#ff9b42";
+            ctx.stroke();
+
+            // Marcas de las horas
+            for (let i = 0; i < 12; i++) {
+                const angulo = (i * Math.PI / 6) - Math.PI / 2;
+
+                const x1 = centroX + Math.cos(angulo) * 143;
+                const y1 = centroY + Math.sin(angulo) * 143;
+                const x2 = centroX + Math.cos(angulo) * 153;
+                const y2 = centroY + Math.sin(angulo) * 153;
+
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = "#48275e";
+                ctx.lineWidth = 4;
+                ctx.lineCap = "round";
+                ctx.stroke();
+            }
+
+            // Números del reloj
+            ctx.fillStyle = "#48275e";
+            ctx.font = "bold 19px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            for (let i = 1; i <= 12; i++) {
+                const angulo = (i * Math.PI / 6) - Math.PI / 2;
+                const x = centroX + Math.cos(angulo) * 122;
+                const y = centroY + Math.sin(angulo) * 122;
+
+                ctx.fillText(i, x, y);
+            }
+
+            // Hora real del sistema
+            const ahora = new Date();
+
+            const segundos = ahora.getSeconds() + ahora.getMilliseconds() / 1000;
+            const minutos = ahora.getMinutes() + segundos / 60;
+            const horas = (ahora.getHours() % 12) + minutos / 60;
+
+            // Ángulos proporcionales: cada manecilla tiene su velocidad
+            const vr1 = Math.PI / 30;       // Segundos
+            const vr2 = Math.PI / 1800;     // Minutos
+            const vr3 = Math.PI / 21600;    // Horas
+
+            const anguloSegundos = segundos * vr1;
+            const anguloMinutos = minutos * Math.PI / 30;
+            const anguloHoras = horas * Math.PI / 6;
+
+            // Manecilla de horas
+            dibujarManecilla(
+                anguloHoras,
+                75,
+                7,
+                "#48275e"
+            );
+
+            // Manecilla de minutos
+            dibujarManecilla(
+                anguloMinutos,
+                105,
+                5,
+                "#a45bd1"
+            );
+
+            // Manecilla de segundos
+            dibujarManecilla(
+                anguloSegundos,
+                125,
+                2,
+                "#f07828"
+            );
+
+            // Centro de las manecillas
+            ctx.beginPath();
+            ctx.arc(centroX, centroY, 8, 0, Math.PI * 2);
+            ctx.fillStyle = "#f07828";
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(centroX, centroY, 3, 0, Math.PI * 2);
+            ctx.fillStyle = "#48275e";
+            ctx.fill();
+
+            requestAnimationFrame(dibujarReloj);
+        }
+
+        dibujarReloj();
+    </script>
+
+</body>
+</html>

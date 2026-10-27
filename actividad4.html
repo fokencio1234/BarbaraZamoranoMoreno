@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Actividad 4</title>
+
+    <style>
+
+        body {
+            background-color: #ffced4;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: Georgia, serif;
+            color: #009a0f;
+        }
+
+        canvas {
+            border: 3px solid #00a11b;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>A4 - Movimiento con salto</h1>
+
+    <canvas id="canvas" width="1100" height="600"></canvas>
+
+
+    <script>
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+
+        // IMAGEN DE FONDO
+        const fondo = new Image();
+        fondo.src = "pasto.jpg";
+
+
+        // IMAGEN DEL PERRO
+        const perro = new Image();
+        perro.src = "perro.png";
+
+
+        let tiempo = 0;
+
+
+        function animar() {
+
+            // Movimiento de izquierda a derecha
+            let x = canvas.width / 2 +
+                    Math.sin(tiempo) * 400;
+
+
+            // Movimiento de salto
+            let y = canvas.height / 2 -
+                    Math.abs(Math.sin(tiempo * 2)) * 150;
+
+
+            // Limpiar canvas
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            // DIBUJAR FONDO
+            ctx.drawImage(
+                fondo,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            // DIBUJAR PERRO
+            ctx.drawImage(
+                perro,
+                x - 100,
+                y - 100,
+                200,
+                200
+            );
+
+
+            tiempo += 0.02;
+
+            requestAnimationFrame(animar);
+
+        }
+
+
+        // Esperar a que las imágenes carguen
+        fondo.onload = function() {
+
+            perro.onload = function() {
+
+                animar();
+
+            };
+
+        };
+
+
+        // Mostrar errores en consola
+        fondo.onerror = function() {
+
+            console.log("ERROR: No se encontró fondo.png");
+
+        };
+
+
+        perro.onerror = function() {
+
+            console.log("ERROR: No se encontró beagle.png");
+
+        };
+
+    </script>
+
+</body>
+
+</html>

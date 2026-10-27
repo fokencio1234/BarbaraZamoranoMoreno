@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actividad 7- Nave personalizada</title>
+
+    <style>
+        body {
+            background-color: #d8f3f0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            color: #176b72;
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Foquita alien</h1>
+    <p>Utiliza las flechas del teclado para mover a la foca</p>
+
+    <canvas id="lienzo" width="960" height="540"></canvas>
+
+    <script>
+        const canvas = document.getElementById("lienzo");
+        const ctx = canvas.getContext("2d");
+
+        // Imágenes
+        const fondo = new Image();
+        fondo.src = "espacio.jpg";
+
+        const foca = new Image();
+        foca.src = "focaalien.png";
+
+        // Posición de la foca
+        let x = 450;
+        let y = 250;
+
+        let velocidadX = 0;
+        let velocidadY = 0;
+
+        const anchoFoca = 90;
+        const altoFoca = 90;
+
+        const aceleracion = 0.25;
+        const friccion = 0.985;
+        const velocidadMaxima = 5;
+
+        const teclas = {};
+
+        document.addEventListener("keydown", function(evento) {
+            teclas[evento.key] = true;
+        });
+
+        document.addEventListener("keyup", function(evento) {
+            teclas[evento.key] = false;
+        });
+
+        function moverFoca() {
+            if (teclas["ArrowUp"]) {
+                velocidadY -= aceleracion;
+            }
+
+            if (teclas["ArrowDown"]) {
+                velocidadY += aceleracion;
+            }
+
+            if (teclas["ArrowLeft"]) {
+                velocidadX -= aceleracion;
+            }
+
+            if (teclas["ArrowRight"]) {
+                velocidadX += aceleracion;
+            }
+
+            velocidadX *= friccion;
+            velocidadY *= friccion;
+
+            velocidadX = Math.max(
+                -velocidadMaxima,
+                Math.min(velocidadMaxima, velocidadX)
+            );
+
+            velocidadY = Math.max(
+                -velocidadMaxima,
+                Math.min(velocidadMaxima, velocidadY)
+            );
+
+            x += velocidadX;
+            y += velocidadY;
+
+            // Evitar que la foca salga del canvas
+            if (x < 0) {
+                x = 0;
+                velocidadX = 0;
+            }
+
+            if (x + anchoFoca > canvas.width) {
+                x = canvas.width - anchoFoca;
+                velocidadX = 0;
+            }
+
+            if (y < 0) {
+                y = 0;
+                velocidadY = 0;
+            }
+
+            if (y + altoFoca > canvas.height) {
+                y = canvas.height - altoFoca;
+                velocidadY = 0;
+            }
+        }
+
+        function dibujar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar imagen de fondo
+            if (fondo.complete && fondo.naturalWidth > 0) {
+                ctx.drawImage(
+                    fondo,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+            }
+
+            // Dibujar la foca
+            if (foca.complete && foca.naturalWidth > 0) {
+                ctx.drawImage(
+                    foca,
+                    x,
+                    y,
+                    anchoFoca,
+                    altoFoca
+                );
+            }
+        }
+
+        function animar() {
+            moverFoca();
+            dibujar();
+            requestAnimationFrame(animar);
+        }
+
+        animar();
+    </script>
+
+</body>
+</html>

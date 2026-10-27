@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actividad Canva API</title>
+
+    <style>
+        body {
+            background-color: #f5f2ed;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            color: #444;
+        }
+
+        canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Figuras con Canvas</h1>
+
+    <canvas id="lienzo" width="900" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById("lienzo");
+        const ctx = canvas.getContext("2d");
+
+        // Fondo
+        ctx.fillStyle = "#f5f2ed";
+        ctx.fillRect(0, 0, 900, 600);
+
+        // Función para escribir el nombre de cada figura
+        function ponerTitulo(texto, x, y) {
+            ctx.fillStyle = "#444444";
+            ctx.font = "16px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(texto, x, y);
+        }
+
+        // 1. Casita
+        ponerTitulo("Casita", 150, 60);
+
+        // Techo
+        ctx.fillStyle = "#d97962";
+        ctx.beginPath();
+        ctx.moveTo(75, 150);
+        ctx.lineTo(150, 90);
+        ctx.lineTo(225, 150);
+        ctx.closePath();
+        ctx.fill();
+
+        // Cuerpo de la casa
+        ctx.fillStyle = "#efcf91";
+        ctx.fillRect(90, 150, 120, 95);
+
+        // Puerta
+        ctx.fillStyle = "#91684a";
+        ctx.fillRect(140, 195, 30, 50);
+
+        // Ventanas
+        ctx.fillStyle = "#9bd4df";
+        ctx.fillRect(103, 170, 25, 25);
+        ctx.fillRect(172, 170, 25, 25);
+
+
+        // 2. Honguito
+        ponerTitulo("Honguito", 450, 60);
+
+        // Tallo
+        ctx.fillStyle = "#e8d2b5";
+        ctx.fillRect(420, 155, 60, 70);
+
+        // Sombrero
+        ctx.fillStyle = "#e77777";
+        ctx.beginPath();
+        ctx.arc(450, 155, 60, Math.PI, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        // Manchas blancas
+        ctx.fillStyle = "white";
+
+        ctx.beginPath();
+        ctx.arc(425, 125, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(465, 115, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(480, 140, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+
+        // 3. Estrella
+        ponerTitulo("Estrella", 750, 60);
+
+        ctx.beginPath();
+
+        for (let i = 0; i < 10; i++) {
+            let angulo = -Math.PI / 2 + i * Math.PI / 5;
+            let radio = i % 2 === 0 ? 55 : 25;
+
+            let x = 750 + Math.cos(angulo) * radio;
+            let y = 155 + Math.sin(angulo) * radio;
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+
+        ctx.closePath();
+
+        // Gradiente para la estrella
+        let gradiente = ctx.createLinearGradient(700, 100, 800, 200);
+        gradiente.addColorStop(0, "#ffd166");
+        gradiente.addColorStop(1, "#f28c45");
+
+        ctx.fillStyle = gradiente;
+        ctx.fill();
+
+        ctx.strokeStyle = "#d9823b";
+        ctx.stroke();
+
+
+        // 4. Luna creciente
+        ponerTitulo("Luna", 150, 320);
+
+        // Primer círculo
+        ctx.fillStyle = "#f2c75c";
+        ctx.beginPath();
+        ctx.arc(150, 410, 50, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Segundo círculo del color del fondo
+        ctx.fillStyle = "#f5f2ed";
+        ctx.beginPath();
+        ctx.arc(175, 390, 45, 0, Math.PI * 2);
+        ctx.fill();
+
+
+        // 5. Dibujo libre: flor
+        ponerTitulo("Flor", 450, 320);
+
+        // Tallo
+        ctx.strokeStyle = "#659765";
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(450, 430);
+        ctx.lineTo(450, 510);
+        ctx.stroke();
+
+        // Hojas
+        ctx.fillStyle = "#83b58a";
+
+        ctx.beginPath();
+        ctx.ellipse(430, 470, 20, 10, -0.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.ellipse(470, 490, 20, 10, 0.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Pétalos
+        ctx.fillStyle = "#d7a8d8";
+
+        for (let i = 0; i < 5; i++) {
+            let angulo = i * Math.PI * 2 / 5;
+
+            let x = 450 + Math.cos(angulo) * 25;
+            let y = 405 + Math.sin(angulo) * 25;
+
+            ctx.beginPath();
+            ctx.arc(x, y, 18, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Centro de la flor
+        ctx.fillStyle = "#f2c75c";
+        ctx.beginPath();
+        ctx.arc(450, 405, 15, 0, Math.PI * 2);
+        ctx.fill();
+
+
+        // 6. Extra: zorrito sencillo
+        ponerTitulo("Zorrito", 750, 320);
+
+        // Orejas
+        ctx.fillStyle = "#c96b43";
+
+        ctx.beginPath();
+        ctx.moveTo(700, 390);
+        ctx.lineTo(705, 345);
+        ctx.lineTo(735, 375);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(765, 375);
+        ctx.lineTo(795, 345);
+        ctx.lineTo(800, 390);
+        ctx.closePath();
+        ctx.fill();
+
+        // Cabeza
+        ctx.beginPath();
+        ctx.arc(750, 405, 48, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Hocico
+        ctx.fillStyle = "#fff0d9";
+        ctx.beginPath();
+        ctx.moveTo(710, 410);
+        ctx.lineTo(790, 410);
+        ctx.lineTo(750, 450);
+        ctx.closePath();
+        ctx.fill();
+
+        // Ojos
+        ctx.fillStyle = "#333333";
+
+        ctx.beginPath();
+        ctx.arc(733, 400, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(767, 400, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Nariz
+        ctx.beginPath();
+        ctx.arc(750, 431, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Actividad 2 - Mouse</title>
+
+    <style>
+
+        body {
+            background-color: white;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #0099cc;
+        }
+
+        canvas {
+            border: 2px solid #00a8e8;
+            background-color: white;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>ACT 2- Imagen siguiendo al mouse</h1>
+
+    <canvas id="canvas" width="900" height="700"></canvas>
+
+    <script>
+
+        // Obtener el canvas
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Cargar la imagen
+        const imagen = new Image();
+        imagen.src = "camaron.png";
+
+        // Posición inicial de la imagen
+        let x = canvas.width / 2;
+        let y = canvas.height / 2;
+
+        // Ángulo de rotación
+        let angulo = 0;
+
+        // Posición del mouse
+        let mouseX = x;
+        let mouseY = y;
+
+        // Detectar el movimiento del mouse
+        canvas.addEventListener("mousemove", function(event) {
+
+            const rect = canvas.getBoundingClientRect();
+
+            mouseX = event.clientX - rect.left;
+            mouseY = event.clientY - rect.top;
+
+            // Calcular el ángulo usando atan2
+            angulo = Math.atan2(mouseY - y, mouseX - x);
+
+        });
+
+        // Dibujar la imagen
+        function dibujar() {
+
+            // Limpiar el canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Guardar el estado del canvas
+            ctx.save();
+
+            // Mover el punto de referencia al centro de la imagen
+            ctx.translate(x, y);
+
+            // Rotar hacia el mouse
+            ctx.rotate(angulo);
+
+            // Dibujar la imagen centrada
+            ctx.drawImage(
+                imagen,
+                -100,
+                -100,
+                200,
+                200
+            );
+
+            // Restaurar el canvas
+            ctx.restore();
+
+            // Repetir la animación
+            requestAnimationFrame(dibujar);
+        }
+
+        // Esperar a que cargue la imagen
+        imagen.onload = function() {
+            dibujar();
+        };
+
+    </script>
+
+</body>
+</html>

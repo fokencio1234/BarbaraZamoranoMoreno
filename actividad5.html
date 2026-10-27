@@ -1,0 +1,378 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 5 - Paint personalizado</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 20px;
+            background-color: #ffb1c8;
+            font-family: Helvetica, Arial, sans-serif;
+            color: #49251f;
+        }
+
+        .contenedor {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-family: Georgia, serif;
+            font-size: 48px;
+            margin: 0 0 10px;
+            color: #e95b22;
+        }
+
+        header p {
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .app {
+            background-color: #fff6dc;
+            padding: 22px;
+            border: 3px solid #49251f;
+            border-radius: 22px;
+            box-shadow: 7px 7px 0 #e95b22;
+        }
+
+        .etiqueta {
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .herramientas {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 22px;
+            margin-bottom: 20px;
+        }
+
+        .grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .colores, .grosores {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .color {
+            width: 34px;
+            height: 34px;
+            border: 2px solid #49251f;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .color.activo {
+            outline: 3px solid #49251f;
+            outline-offset: 3px;
+        }
+
+        .color:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #e95b22;
+            outline-offset: 3px;
+        }
+
+        button {
+            font-family: Helvetica, Arial, sans-serif;
+            cursor: pointer;
+        }
+
+        .grosor {
+            min-width: 65px;
+            padding: 9px 12px;
+            border: 2px solid #49251f;
+            border-radius: 12px;
+            background: white;
+            font-weight: bold;
+        }
+
+        .grosor.activo {
+            background-color: #ffd83d;
+        }
+
+        .borrar {
+            margin-left: auto;
+            padding: 12px 17px;
+            background-color: #e95b22;
+            color: white;
+            border: 2px solid #49251f;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .borrar:hover {
+            background-color: #c94416;
+        }
+
+        .lienzo-contenedor {
+            background-color: white;
+            border: 3px solid #49251f;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 450px;
+            background-color: white;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .pie {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+            font-size: 13px;
+        }
+
+        .decoracion {
+            color: #e95b22;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            h1 {
+                font-size: 38px;
+            }
+
+            .app {
+                padding: 15px;
+            }
+
+            canvas {
+                height: 350px;
+            }
+
+            .borrar {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <header>
+            <h1>Mi paint personal</h1>
+            <p>Dibujar y divertirse :D</p>
+        </header>
+
+        <main class="app">
+
+            <div class="herramientas">
+
+                <div class="grupo">
+                    <div class="etiqueta">01 / Elige tu color</div>
+
+                    <div class="colores">
+                        <button class="color activo" style="background:#f04444"
+                            data-color="#f04444" aria-label="Rojo" title="Rojo"></button>
+
+                        <button class="color" style="background:#ff8c42"
+                            data-color="#ff8c42" aria-label="Naranja" title="Naranja"></button>
+
+                        <button class="color" style="background:#ffd83d"
+                            data-color="#ffd83d" aria-label="Amarillo" title="Amarillo"></button>
+
+                        <button class="color" style="background:#50b878"
+                            data-color="#50b878" aria-label="Verde" title="Verde"></button>
+
+                        <button class="color" style="background:#4595ed"
+                            data-color="#4595ed" aria-label="Azul" title="Azul"></button>
+
+                        <button class="color" style="background:#a879df"
+                            data-color="#a879df" aria-label="Morado" title="Morado"></button>
+
+                        <button class="color" style="background:#49251f"
+                            data-color="#49251f" aria-label="Café oscuro" title="Café oscuro"></button>
+
+                        <button class="color" style="background:#ff8fb1"
+                            data-color="#ff8fb1" aria-label="Rosa" title="Rosa"></button>
+                    </div>
+                </div>
+
+                <div class="grupo">
+                    <div class="etiqueta">02 / Grosor</div>
+
+                    <div class="grosores">
+                        <button class="grosor activo" data-grosor="3">Fino</button>
+                        <button class="grosor" data-grosor="8">Medio</button>
+                        <button class="grosor" data-grosor="16">Grueso</button>
+                    </div>
+                </div>
+
+                <button class="borrar" id="borrar">✕ Borrar todo</button>
+
+            </div>
+
+            <div class="lienzo-contenedor">
+                <canvas id="lienzo" aria-label="Área para dibujar"></canvas>
+            </div>
+
+            <div class="pie">
+                <span>✎ Haz clic y arrastra para dibujar.</span>
+                <span class="decoracion">DRAW SOMETHING FUN!</span>
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById("lienzo");
+        const ctx = canvas.getContext("2d");
+
+        let colorActual = "#f04444";
+        let grosorActual = 3;
+        let dibujando = false;
+
+        function ajustarCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            const imagenAnterior = document.createElement("canvas");
+
+            imagenAnterior.width = canvas.width;
+            imagenAnterior.height = canvas.height;
+            imagenAnterior.getContext("2d").drawImage(canvas, 0, 0);
+
+            const escala = window.devicePixelRatio || 1;
+
+            canvas.width = rect.width * escala;
+            canvas.height = rect.height * escala;
+
+            ctx.setTransform(escala, 0, 0, escala, 0, 0);
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+
+            if (imagenAnterior.width > 0 && imagenAnterior.height > 0) {
+                ctx.drawImage(
+                    imagenAnterior,
+                    0, 0, imagenAnterior.width, imagenAnterior.height,
+                    0, 0, rect.width, rect.height
+                );
+            }
+        }
+
+        ajustarCanvas();
+        window.addEventListener("resize", ajustarCanvas);
+
+        document.querySelectorAll(".color").forEach(boton => {
+            boton.addEventListener("click", () => {
+                colorActual = boton.dataset.color;
+
+                document.querySelectorAll(".color").forEach(b => {
+                    b.classList.remove("activo");
+                });
+
+                boton.classList.add("activo");
+            });
+        });
+
+        document.querySelectorAll(".grosor").forEach(boton => {
+            boton.addEventListener("click", () => {
+                grosorActual = Number(boton.dataset.grosor);
+
+                document.querySelectorAll(".grosor").forEach(b => {
+                    b.classList.remove("activo");
+                });
+
+                boton.classList.add("activo");
+            });
+        });
+
+        function obtenerPosicion(evento) {
+            const rect = canvas.getBoundingClientRect();
+
+            return {
+                x: evento.clientX - rect.left,
+                y: evento.clientY - rect.top
+            };
+        }
+
+        canvas.addEventListener("pointerdown", evento => {
+            dibujando = true;
+            canvas.setPointerCapture(evento.pointerId);
+
+            const posicion = obtenerPosicion(evento);
+
+            ctx.beginPath();
+            ctx.arc(
+                posicion.x,
+                posicion.y,
+                grosorActual / 2,
+                0,
+                Math.PI * 2
+            );
+            ctx.fillStyle = colorActual;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(posicion.x, posicion.y);
+        });
+
+        canvas.addEventListener("pointermove", evento => {
+            if (!dibujando) return;
+
+            const posicion = obtenerPosicion(evento);
+
+            ctx.lineTo(posicion.x, posicion.y);
+            ctx.strokeStyle = colorActual;
+            ctx.lineWidth = grosorActual;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(posicion.x, posicion.y);
+        });
+
+        function terminarDibujo() {
+            dibujando = false;
+            ctx.beginPath();
+        }
+
+        canvas.addEventListener("pointerup", terminarDibujo);
+        canvas.addEventListener("pointercancel", terminarDibujo);
+        canvas.addEventListener("lostpointercapture", terminarDibujo);
+
+        document.getElementById("borrar").addEventListener("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+    </script>
+
+</body>
+</html>
